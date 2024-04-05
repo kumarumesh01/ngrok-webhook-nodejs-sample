@@ -113,12 +113,24 @@ app.use(express.json());
 app.get("/test_insert", async (req, res) => {
   // Fixed data as provided
   const fixedData = {
-    id: 5790255907127,
-    // Include the rest of the data structure here...
-    contact_email: "choudharypaarul0@gmail.com",
-    order_number: 1438,
-    // Simplified for demonstration. You should include all necessary fields as per your function requirements.
-  };
+  "id": 5790255907127,
+  "checkout_id": 37221975064887,
+  "contact_email": "choudharypaarul0@gmail.com",
+  "order_number": 1438,
+  "email": "choudharypaarul0@gmail.com",
+  "phone": "+918734901581",
+  "currency": "INR",
+  "financial_status": "paid",
+  "total_price": "1999.00",
+  "line_items": [
+    {
+      "id": 14847472533815,
+      "product_id": 9292074910007,
+      "quantity": 1,
+      "price": "1999.00"
+    }
+  ]
+};
 
   try {
     // Prepare the query to call the PostgreSQL function with the JSONB data

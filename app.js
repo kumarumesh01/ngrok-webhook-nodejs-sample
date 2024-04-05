@@ -109,25 +109,25 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Shopify webhook endpoint
+// Endpoint for handling Shopify webhooks
 app.post("/shopify_webhooks", async (req, res) => {
   try {
-    // Convert the entire request body to a JSON string
-    const jsonbData = JSON.stringify(req.body);
+    // Directly use the JSON body of the request for the database function
+    const jsonbData = req.body; // No need for JSON.stringify here
     
-    // Call the PostgreSQL function to insert the data
+    // Prepare the query to call the PostgreSQL function with the JSONB data
     const queryText = "SELECT * FROM api.insert_shopify_order_v2($1::jsonb)";
-    const queryValues = [jsonbData];
+    const queryValues = [jsonbData]; // Directly pass the JSON object
 
     // Execute the query
-    const result = await pool.query(queryText, queryValues);
-    console.log("Insertion result:", result.rows);
+    const { rows } = await pool.query(queryText, queryValues);
+    console.log("Database function execution result:", rows);
 
-    // Respond to the webhook
-    res.status(200).json({ message: "Webhook data received and processed", details: result.rows });
+    // Respond back to Shopify to acknowledge receipt of the webhook
+    res.status(200).json({ message: "Webhook data received and processed", details: rows });
   } catch (err) {
-    console.error("Database operation failed:", err);
-    res.status(500).json({ error: "Failed to insert webhook data into database", details: err.message });
+    console.error("Error processing webhook data:", err);
+    res.status(500).json({ error: "Failed to process webhook data", details: err.message });
   }
 });
 

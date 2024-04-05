@@ -91,32 +91,43 @@
 // });
 
 // THIRD
-const express = require('express');
-const db = require('./db'); // Import the db config
-const app = express();
-const port = 3000;
+require("dotenv-safe").config();
+const express = require("express");
+const { Pool } = require("pg");
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.post('/shopify_webhooks', async (req, res) => {
-    console.log("-------------- New Shopify Webhook Request --------------");
-    
-    // Convert the request body to JSONB format expected by the PostgreSQL function
-    const jsonbData = JSON.stringify(req.body);
-
-    try {
-        // Call the PostgreSQL function to insert the webhook data
-        const result = await db.query("SELECT * FROM api.insert_shopify_order_v2($1::jsonb)", [jsonbData]);
-
-        console.log("Insertion result:", result.rows);
-        res.json({ message: "Received Shopify webhook and processed data", details: result.rows });
-    } catch (err) {
-        console.error("Database operation failed:", err);
-        res.status(500).json({ error: "Failed to process data" });
-    }
+// Set up database connection
+const pool = new Pool({
+  user: 'learner',
+  host: 'neetprep-staging.cvvtorjqg7t7.ap-south-1.rds.amazonaws.com',
+  database: 'learner_development',
+  password: 'Deq05h0KiL6icSvS',
+  port: 5432,
 });
 
-app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+
+// Endpoint to receive Shopify webhooks
+app.post("/shopify_webhooks", async (req, res) => {
+  try {
+    const jsonbData = JSON.stringify(req.body);
+    
+    // Call the PostgreSQL function with the JSONB data
+    const queryText = "SELECT * FROM api.insert_shopify_order_v2($1::jsonb)";
+    const queryValues = [jsonbData];
+
+    const { rows } = await pool.query(queryText, queryValues);
+    console.log("Insertion result:", rows);
+
+    res.status(200).json({ message: "Webhook data received and processed", details: rows });
+  } catch (err) {
+    console.error("Database operation failed:", err);
+    res.status(500).json({ error: "Failed to insert webhook data into database", details: err.message });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`App listening on port http://localhost:${PORT}`);
 });

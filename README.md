@@ -11,7 +11,7 @@ To install this sample, run the following commands:
 ```bash
 git clone https://github.com/kumarumesh01/ngrok-webhook-nodejs-sample.git
 cd ngrok-webhook-nodejs-sample
-npm i
+npm install
 ```
 
 This will get the project installed locally.

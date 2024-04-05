@@ -10,13 +10,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ngrok/ngrok-webhook-nodejs-sample.git"
+    "url": "git+https://github.com/kumarumesh01/ngrok-webhook-nodejs-sample.git"
   },
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/ngrok/ngrok-webhook-nodejs-sample/issues"
+    "url": "https://github.com/kumarumesh01/ngrok-webhook-nodejs-sample/issues"
   },
-  "homepage": "https://github.com/ngrok/ngrok-webhook-nodejs-sample#readme",
+  "homepage": "https://github.com/kumarumesh01/ngrok-webhook-nodejs-sample#readme",
   "dependencies": {
     "express": "^4.18.1"
   }

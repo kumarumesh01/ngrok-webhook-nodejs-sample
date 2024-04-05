@@ -109,25 +109,31 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Endpoint for handling Shopify webhooks
-app.post("/shopify_webhooks", async (req, res) => {
+// Route for testing the insertion of fixed data
+app.get("/test_insert", async (req, res) => {
+  // Fixed data as provided
+  const fixedData = {
+    id: 5790255907127,
+    // Include the rest of the data structure here...
+    contact_email: "choudharypaarul0@gmail.com",
+    order_number: 1438,
+    // Simplified for demonstration. You should include all necessary fields as per your function requirements.
+  };
+
   try {
-    // Directly use the JSON body of the request for the database function
-    const jsonbData = req.body; // No need for JSON.stringify here
-    
     // Prepare the query to call the PostgreSQL function with the JSONB data
     const queryText = "SELECT * FROM api.insert_shopify_order_v2($1::jsonb)";
-    const queryValues = [jsonbData]; // Directly pass the JSON object
+    const queryValues = [fixedData]; // Pass the fixed JSON object
 
     // Execute the query
     const { rows } = await pool.query(queryText, queryValues);
     console.log("Database function execution result:", rows);
 
-    // Respond back to Shopify to acknowledge receipt of the webhook
-    res.status(200).json({ message: "Webhook data received and processed", details: rows });
+    // Respond back to acknowledge the operation
+    res.status(200).json({ message: "Fixed data received and processed", details: rows });
   } catch (err) {
-    console.error("Error processing webhook data:", err);
-    res.status(500).json({ error: "Failed to process webhook data", details: err.message });
+    console.error("Error processing fixed data:", err);
+    res.status(500).json({ error: "Failed to process fixed data", details: err.message });
   }
 });
 

@@ -95,7 +95,7 @@ require("dotenv-safe").config();
 const express = require("express");
 const { Pool } = require("pg");
 
-// Set up database connection
+// PostgreSQL pool setup
 const pool = new Pool({
   user: 'learner',
   host: 'neetprep-staging.cvvtorjqg7t7.ap-south-1.rds.amazonaws.com',
@@ -109,19 +109,22 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Endpoint to receive Shopify webhooks
+// Shopify webhook endpoint
 app.post("/shopify_webhooks", async (req, res) => {
   try {
+    // Convert the entire request body to a JSON string
     const jsonbData = JSON.stringify(req.body);
     
-    // Call the PostgreSQL function with the JSONB data
+    // Call the PostgreSQL function to insert the data
     const queryText = "SELECT * FROM api.insert_shopify_order_v2($1::jsonb)";
     const queryValues = [jsonbData];
 
-    const { rows } = await pool.query(queryText, queryValues);
-    console.log("Insertion result:", rows);
+    // Execute the query
+    const result = await pool.query(queryText, queryValues);
+    console.log("Insertion result:", result.rows);
 
-    res.status(200).json({ message: "Webhook data received and processed", details: rows });
+    // Respond to the webhook
+    res.status(200).json({ message: "Webhook data received and processed", details: result.rows });
   } catch (err) {
     console.error("Database operation failed:", err);
     res.status(500).json({ error: "Failed to insert webhook data into database", details: err.message });

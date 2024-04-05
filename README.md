@@ -9,7 +9,7 @@ This sample app works as a webhook listener using Node and ExpressJS.
 To install this sample, run the following commands:
 
 ```bash
-git clone https://github.com/ngrok/ngrok-webhook-nodejs-sample.git
+git clone https://github.com/kumarumesh01/ngrok-webhook-nodejs-sample.git
 cd ngrok-webhook-nodejs-sample
 npm i
 ```
